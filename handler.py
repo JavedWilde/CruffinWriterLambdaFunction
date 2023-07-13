@@ -96,9 +96,10 @@ def handler(event, context):
 
     fontFile = f'Fonts/SVGFONT ({0}).svg' #change numbers for different fonts 0 - 18
 
+    # use this function to generate the gcode, can generate query and assign here accordingly
     gcode = Helpers.GetGcode(text = 'Happy Birthday Dude dabs', fontFile = fontFile, xOffset = 0, yOffset = 0, max_bed_x = 60, max_bed_y = 20, move_speed = 300, cut_speed = 300, letterLimit = 25, arThres = 8)
 
-    # post processing
+    # do the same post processing, i didnt do it for now
     gcode = gcode.replace("M3", "G0 F1000 Z-1")
     gcode = gcode.replace("M5", "G0 F1000 Z1")
     gcode = gcode.replace(" S255", "")
