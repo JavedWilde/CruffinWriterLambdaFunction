@@ -1,4 +1,4 @@
-import cairo
+import Helpers
 
 def handler(event, context):
 
@@ -94,68 +94,15 @@ def handler(event, context):
         else 1
     )
 
-    surface = cairo.SVGSurface("test.svg", svg_width * 2.83465, 13)
+    fontFile = f'Fonts/SVGFONT ({0}).svg' #change numbers for different fonts 0 - 18
 
-    # with cairo.SVGSurface("test.svg", 700, 700) as surface:
+    gcode = Helpers.GetGcode(text = 'Happy Birthday Dude', fontFile = fontFile, xOffset = 0, yOffset = 0, max_bed_x = 60, max_bed_y = 20, move_speed = 300, cut_speed = 300, letterLimit = 25, arThres = 8)
 
-    # creating a cairo context object for SVG surface
-    # using Context method
-    Context = cairo.Context(surface)
-
-    # setting color of the context
-    Context.set_source_rgb(rgb_r, rgb_g, rgb_b)
-
-    # approximate text height
-    Context.set_font_size(font_size)
-
-    # Font Style
-    Context.select_font_face(font_face, cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-
-    # position for the text
-    Context.move_to(text_position_x, text_position_y)
-
-    # displays the text
-    Context.text_path(text)
-
-    # Width of outline
-    Context.set_line_width(line_width)
-
-    # stroke out the color and width property
-    Context.stroke()
-
-    Context.save()
-
-    surface.finish()
-    # saving the file
-    surface.flush()
-
-    # printing message when file is saved
-
-    # print(svg)
-
-    from svg_to_gcode.svg_parser import parse_file
-    from svg_to_gcode.compiler import Compiler, interfaces
-
-    # Instantiate a compiler, specifying the interface type and the speed at which the tool should move. pass_depth controls
-    # how far down the tool moves after every pass. Set it to 0 if your machine does not support Z axis movement.
-    gcode_compiler = Compiler(
-        interfaces.Gcode,
-        movement_speed=movement_speed,
-        cutting_speed=cutting_speed,
-        pass_depth=pass_depth,
-    )
-
-    curves = parse_file("test.svg")  # Parse an svg file into geometric curves
-
-    gcode_compiler.append_curves(curves)
-    gcode = gcode_compiler.compile(passes=passes)
 
     gcode = gcode.replace("M3", "G0 F1000 Z-1")
     gcode = gcode.replace("M5", "G0 F1000 Z1")
     gcode = gcode.replace(" S255", "")
 
-    # gcode_compiler.compile_to_file("drawing.gcode", passes=1)
-    # save the gcode to a file
     with open("drawing.gcode", "w") as f:
         f.write(gcode)
     return {
